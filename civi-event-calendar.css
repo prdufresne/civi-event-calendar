@@ -1,0 +1,80 @@
+.civi-event-calendar h3 {
+    color: #5F5;
+}
+
+.civi-event-calendar-event {
+    width: 100%;
+    margin-bottom: 5px;
+    align-content: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: none;
+  
+  }
+  
+  .civi-event-calendar-event.member {
+    background-color: #fdd;
+  }
+  
+  .civi-event-calendar-event.open {
+    background-color: #dfd;
+  }
+  
+  .civi-event-calendar-weekday {
+    text-align: center;
+    font-size: .8em;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ccc;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding-top: 2px;
+  }
+  
+  .civi-event-calendar-day {
+    text-align: center;
+    font-size: 2em;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+    border-bottom-left-radius:  10px;
+    border-bottom-right-radius: 10px;
+    padding-bottom: 5px;
+  }
+  
+  .civi-event-calendar-title {
+    font-size: 1.25em;
+  }
+  
+  .civi-event-calendar-description {
+    font-size: 1em;
+  }
+  
+  .civi-event-calendar-cell-date {
+    width: 70px;
+    padding: 2px 5px;
+  }
+  
+  .civi-event-calendar-cell-body {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .civi-event-calendar-cell-register {
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 100px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .civi-event-calendar-register {
+    text-align: center;
+    background-color: blue;
+    color:white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 3px 3px #aaa;
+    cursor: pointer;
+  }
+
+  
