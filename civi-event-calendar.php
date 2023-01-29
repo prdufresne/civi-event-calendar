@@ -79,44 +79,48 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         }
 
         // Start the event row (we use a complete table for each event for formatting reasons);
-        $row = "<table class=\"civi-event-calendar-event member\">";
-        $row .= "<tbody";
-        $row .= "<tr>";
+        $row = "<div class=\"civi-event-calendar-event member\">";
+        // $row .= "<tbody";
+        // $row .= "<tr>";
         
         // Add the date block
 
-        $row .= "<td class=\"civi-event-calendar-cell-date\">";
+        $row .= "<div class=\"civi-event-calendar-cell-date\">";
         if ($startDay == $endDay && $startMonth == $endMonth) {
             // single day event
-            $row .= "<div class=\"civi-event-calendar-weekday\">$startWeekday</div>";
-            $row .= "<div class=\"civi-event-calendar-day\">$startDay</div>";
+            $row .= "    <div class=\"civi-event-calendar-weekday\">$startWeekday</div>";
+            $row .= "    <div class=\"civi-event-calendar-day\">$startDay</div>";
         } else {
             // multi-day event
             $row .="<p>end date is $end</p>";
         }
-        $row .= "</td>";
+        $row .= "</div>";
 
-        // Add the title and summary
-
-        $row .= "<td class=\"civi-event-calendar-cell-body\">";
-        $row .= "<div class=\"civi-event-calendar-title\"><a href=\"$url\">$title</a></div>";
-        $row .= "<div class=\"civi-event-calendar-description\">$summary</div>";
-        $row .= "</td>";
-
+        
         // Add the Register button
 
         $id = $event['event_id'];
         $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
 
-        $row .= "<td class=\"civi-event-calendar-cell-register\">";
-        $row .= "<div class=\"civi-event-calendar-register\" onclick=\"window.location.href='$reglink\'\">Register</div>";
-        $row .= "</td>";
+        $row .= "<div class=\"civi-event-calendar-cell-register\">";
+        $row .= "    <a href=\"$reglink\">";
+        $row .= "        <div class=\"civi-event-calendar-register\" onclick=\"window.location.href='$reglink\'\">Register</div>";
+        $row .= "    </a>";
+        $row .= "</div>";
+
+
+
+        // Add the title and summary
+
+        // $row .= "<div class=\"civi-event-calendar-cell-body\">";
+        $row .= "    <div class=\"civi-event-calendar-title\"><a href=\"$url\">$title</a></div>";
+        $row .= "    <div class=\"civi-event-calendar-description\">$summary</div>";
+        // $row .= "</div>";
 
         // Close Row
-        $row .= "</tr>";
-        $row .= "</tbody>";
-        $row .= "</table>";
-
+        // $row .= "</tr>";
+        // $row .= "</tbody>";
+        $row .= "</div>";
 
         $Content .= $row;
     }
