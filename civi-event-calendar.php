@@ -24,34 +24,16 @@ function civi_event_calendar_enqueue() {
 
 add_action('init', 'civi_event_calendar_enqueue' );
 
-function get_event_style($typeId) {
-    $typeLabel = "default";
-    switch($typeId) {
-        case 10:
-            // Member
-            $typeLabel = "Member-Run";
-            break;
-        case 11:
-            // Open
-            $typeLabel = "Open-Run";
-    };
-
-    return $typeLabel;
-}
-
 function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
     
-    // Access CiviCRM data 
-    require_once 'CRM/Utils/System.php';
-
 	// Normalize attribute keys to lowercase
 	$atts = array_change_key_case( (array) $atts, CASE_LOWER );
 
     //Add default attributes and override with user attributes
     $atts = shortcode_atts(
         array(
-            'showHeader' => 1,
-            'header' => 'Event Calendar',
+            'showheader' => 1,
+            'header' => 'Upcoming Events',
         ), $user_atts, $tag
     );
 
@@ -59,35 +41,38 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
     $Content = '<div class="civi-event-calendar">';
 
     // Add header
-    if($atts['showHeader'] > 0) {
+    if($atts['showheader'] > 0) {
         $header = $atts['header'];
 	    $Content .= "    <h3>$header</h3>";
     }
 
-    $eventList = CRM_Event_BAO_Event::getCompleteInfo();
+    // Get events starting today or after ordered by start date
+    $eventList = \Civi\Api4\Event::get(FALSE)
+        ->addSelect('*', 'event_type_id:label', 'registration_link_text')
+        ->addOrderBy('start_date', 'ASC')
+        ->addOrderBy('end_date', 'ASC')
+        ->addWhere('start_date', '>=', date('Y-m-d'))
+        ->execute();
     $currentMonth = "";
 
     foreach ( $eventList as $event ) {
-        $title = CRM_Utils_Array::value( 'title', $event );
-        $summary = CRM_Utils_Array::value( 'summary', $event, '' );
-        $url = CRM_Utils_Array::value( 'url', $event );
-        $type = CRM_Utils_Array::value( 'event_type_id', $event );
-        $typeLabel = get_event_style($type);
+        $title = $event['title'];
+        $summary = $event['summary'];
+        $typeLabel = $event['event_type_id:label'];
+        $id = $event['id'];
+        $url = CRM_Utils_System::url( 'civicrm/event/info', "reset=1&id=$id" );
 
-        $startString = CRM_Utils_Array::value( 'start_date', $event );
+        $startString = $event['start_date'];
         $start = date_create_from_format('Y-m-d H:i:s',$startString);
         $startMonth = date_format($start, 'F');
         $startDay = date_format($start, 'j');
         $startWeekday = date_format($start, 'l');
 
-        $endString = CRM_Utils_Array::value( 'start_date', $event );
+        $endString = $event['start_date'];
         $end = date_create_from_format('Y-m-d H:i:s',$endString);
         $endMonth = date_format($end, 'F');
         $endDay = date_format($end, 'j');
         $endWeekday = date_format($end, 'l');
-
-        // $Content .= "    <p>Title: $title</p>";
-        // $Content .= "    <p>Event Date: $startWeekday $startMonth $startDay ($startString)</p>";
 
         // Insert a monthly header 
         if ($startMonth != $currentMonth) {
@@ -97,8 +82,6 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
 
         // Start the event row (we use a complete table for each event for formatting reasons);
         $row = "<div class=\"civi-event-calendar-event $typeLabel\">";
-        // $row .= "<tbody";
-        // $row .= "<tr>";
         
         // Add the date block
 
@@ -116,7 +99,9 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         
         // Add the Register button
 
-        $id = $event['event_id'];
+        $isRegistration = $event['is_online_registration'];
+
+        if($isRegistration) {
         $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
 
         $row .= "<div class=\"civi-event-calendar-cell-register\">";
@@ -125,18 +110,17 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         $row .= "    </a>";
         $row .= "</div>";
 
+        }
+
 
 
         // Add the title and summary
 
-        // $row .= "<div class=\"civi-event-calendar-cell-body\">";
         $row .= "    <div class=\"civi-event-calendar-title\"><a href=\"$url\">$title</a></div>";
         $row .= "    <div class=\"civi-event-calendar-description\">$summary</div>";
-        // $row .= "</div>";
 
         // Close Row
-        // $row .= "</tr>";
-        // $row .= "</tbody>";
+
         $row .= "</div>";
 
         $Content .= $row;
