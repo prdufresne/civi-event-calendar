@@ -1,6 +1,3 @@
-.civi-event-calendar h3 {
-    color: #5F5;
-}
 
 .civi-event-calendar-event {
     width: 100%;
@@ -13,12 +10,17 @@
     border: none;
   
   }
-  
-  .civi-event-calendar-event.member {
+
+    
+  .civi-event-calendar-event.default {
+    background-color: #ddd;
+  }
+
+  .civi-event-calendar-event.Member-Run {
     background-color: #fdd;
   }
   
-  .civi-event-calendar-event.open {
+  .civi-event-calendar-event.Open-Run {
     background-color: #dfd;
   }
   
@@ -26,7 +28,7 @@
     text-align: center;
     font-size: .8em;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #ccc;
+    background-color: #01AEFD;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     padding-top: 2px;
@@ -38,7 +40,7 @@
     line-height: 1em;
     font-size: 2em;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: white;
+    background-color: #F1F2F3;
     border-bottom-left-radius:  10px;
     border-bottom-right-radius: 10px;
     padding-bottom: 5px;
@@ -60,7 +62,7 @@
   }
   
   .civi-event-calendar-cell-body {
-    padding-left: 5px;
+    padding-left: 10px;
     padding-right: 5px;
   }
   

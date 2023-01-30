@@ -24,6 +24,21 @@ function civi_event_calendar_enqueue() {
 
 add_action('init', 'civi_event_calendar_enqueue' );
 
+function get_event_style($typeId) {
+    $typeLabel = "default";
+    switch($typeId) {
+        case 10:
+            // Member
+            $typeLabel = "Member-Run";
+            break;
+        case 11:
+            // Open
+            $typeLabel = "Open-Run";
+    };
+
+    return $typeLabel;
+}
+
 function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
     
     // Access CiviCRM data 
@@ -56,6 +71,8 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         $title = CRM_Utils_Array::value( 'title', $event );
         $summary = CRM_Utils_Array::value( 'summary', $event, '' );
         $url = CRM_Utils_Array::value( 'url', $event );
+        $type = CRM_Utils_Array::value( 'event_type_id', $event );
+        $typeLabel = get_event_style($type);
 
         $startString = CRM_Utils_Array::value( 'start_date', $event );
         $start = date_create_from_format('Y-m-d H:i:s',$startString);
@@ -79,7 +96,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         }
 
         // Start the event row (we use a complete table for each event for formatting reasons);
-        $row = "<div class=\"civi-event-calendar-event member\">";
+        $row = "<div class=\"civi-event-calendar-event $typeLabel\">";
         // $row .= "<tbody";
         // $row .= "<tr>";
         
@@ -104,7 +121,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
 
         $row .= "<div class=\"civi-event-calendar-cell-register\">";
         $row .= "    <a href=\"$reglink\">";
-        $row .= "        <div class=\"civi-event-calendar-register\" onclick=\"window.location.href='$reglink\'\">Register</div>";
+        $row .= "        <div class=\"civi-event-calendar-register\">Register</div>";
         $row .= "    </a>";
         $row .= "</div>";
 
