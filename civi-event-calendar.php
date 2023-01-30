@@ -92,7 +92,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         // Insert a monthly header 
         if ($startMonth != $currentMonth) {
             $currentMonth = $startMonth;
-            $content .= "<h3>$startMonth</h3>";
+            $Content .= "<h3>$startMonth</h3>";
         }
 
         // Start the event row (we use a complete table for each event for formatting reasons);
