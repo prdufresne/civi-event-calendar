@@ -63,13 +63,21 @@
   
   .civi-event-calendar-title {
     font-size: 1.25em;
+    line-height: 1.5em
   }
   
   .civi-event-calendar-description {
     font-size: 1em;
+    line-height: 1.25em;
+    max-height: 2.5em;
+    overflow: hidden;
+    color: #888;
   }
 
-  
+  .civi-event-calendar-description:hover {
+    max-height: unset;
+  }
+
   .civi-event-calendar-cell-register {
     display: block;
     float: right;
