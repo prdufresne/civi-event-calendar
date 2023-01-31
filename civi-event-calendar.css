@@ -1,5 +1,7 @@
 
-.civi-event-calendar-event {
+  .civi-event-calendar-event {
+    display: inline-block;
+    background-color: #F1F2F3;
     width: 100%;
     clear: both;
     margin-bottom: 5px;
@@ -8,14 +10,9 @@
     padding-bottom: 5px;
     padding-left: 5px;
     padding-right: 5px;
-    border: none;
-  
+    border-bottom: solid 5px #555;
   }
     
-.civi-event-calendar-event {
-    background-color: #ddd;
-  }
-
   /* You can customize your site with CSS classes for event types
    * using the event type label as a calss. For example, if you
    * have types Member-Run and Open-Run, you could do the following:
@@ -30,15 +27,17 @@
    
    */
 
+  
+   .civi-event-calendar-cell-date {
+    display: block;
+    float: left;
+    width: 60px;
+    margin: 5px 5px;
+    border-radius: 10px;
+    box-shadow: 3px 3px #aaa;
+    margin-right: 10px;
+  }
 
-  .civi-event-calendar-event.Member-Run {
-    background-color: #fdd;
-  }
-  
-  .civi-event-calendar-event.Open-Run {
-    background-color: #dfd;
-  }
-  
   .civi-event-calendar-weekday {
     text-align: center;
     font-size: .8em;
@@ -51,11 +50,10 @@
   
   .civi-event-calendar-day {
     text-align: center;
-    height: 1.25em;
     line-height: 1em;
     font-size: 2em;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #F1F2F3;
+    background-color: #FFFFFF;
     border-bottom-left-radius:  10px;
     border-bottom-right-radius: 10px;
     padding-bottom: 5px;
@@ -68,18 +66,7 @@
   .civi-event-calendar-description {
     font-size: 1em;
   }
-  
-  .civi-event-calendar-cell-date {
-    display: block;
-    float: left;
-    width: 70px;
-    padding: 2px 5px;
-  }
-  
-  .civi-event-calendar-cell-body {
-    padding-left: 10px;
-    padding-right: 5px;
-  }
+
   
   .civi-event-calendar-cell-register {
     display: block;
