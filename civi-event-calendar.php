@@ -35,6 +35,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
             'showheader' => 1,
             'header' => 'Upcoming Events',
             'showical' => 1,
+            'limit' => 0,
         ), $user_atts, $tag
     );
 
@@ -53,6 +54,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         ->addOrderBy('start_date', 'ASC')
         ->addOrderBy('end_date', 'ASC')
         ->addWhere('start_date', '>=', date('Y-m-d'))
+        ->setLimit($atts['limit'])
         ->execute();
     $currentMonth = "";
 
