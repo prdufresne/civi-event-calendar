@@ -106,4 +106,8 @@
     color: black;
   }
 
+  .civi-event-calendar-register.registered {
+    background-color: lightblue;
+  }
+
   

@@ -47,23 +47,6 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
 	    $Content .= "    <h3>$header</h3>";
     }
 
-    // Get the current user's contact ID
-    // We'll use the ID to check if user is registered for an event and maybe other stuff...
-    $current_user = wp_get_current_user();
-    $userEmail = $current_user->user_email;
-
-    $Content .="<div>Debug: user email: $userEmail</div>";
-
-    $contactRecord = \Civi\Api4\UFMatch::get(FALSE)
-        ->addSelect('*')
-        ->addWhere('uf_name', '=', $userEmail)
-        ->setLimit(25)
-        ->execute();
-    $contactId = $contactRecord[0]['contact_id'];
-
-
-    $Content .="<div>Debug: user id: $contactId</div>";
-
     // Get events starting today or after ordered by start date
     $eventList = \Civi\Api4\Event::get(FALSE)
         ->addSelect('*', 'event_type_id:label', 'registration_link_text')
@@ -118,23 +101,45 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         // Add the Register button
 
         $isRegistration = $event['is_online_registration'];
-        $maxParticipants = $event['max_participants'];
-        $registeredParticipants = count( \Civi\Api4\Participant::get(FALSE)->addSelect('id')->addWhere('event_id', '=', 101)->execute() );
-        $isFull = ($registeredParticipants >= $maxParticipants);
 
-        if( $isRegistration && !$isFull ) {
-            $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
+        if( $isRegistration) {
+
+            // Check if the event is full
+            $maxParticipants = $event['max_participants'];
+            $registeredParticipants = count( \Civi\Api4\Participant::get(FALSE)->addSelect('id')->addWhere('event_id', '=', 101)->execute() );
+            $isFull = ($registeredParticipants >= $maxParticipants);
+
+            // Check to see if this user is already registered for the event
+            $participants = \Civi\Api4\Participant::get(FALSE)
+                ->addSelect('id')
+                ->addWhere('contact_id', '=', 'user_contact_id')
+                ->addWhere('event_id', '=', $id)
+                ->setLimit(25)
+                ->execute();
+
+            $linkOpen = '';
+            $linkClose = '';
+            $label = 'Register';
+            $style = '';
+
+            if (count($participants) > 0) {
+                $label = "Registered";
+                $style = "registered";
+            } elseif ($isFull) {
+                $label = "Full";
+                $style = "full";
+            } else {
+                $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
+                $linkOpen = "    <a href=\"$reglink\">";
+                $linkClose = "    </a>";
+            }
 
             $row .= "<div class=\"civi-event-calendar-cell-register\">";
-            $row .= "    <a href=\"$reglink\">";
-            $row .= "        <div class=\"civi-event-calendar-register\">Register</div>";
-            $row .= "    </a>";
+            $row .= $linkOpen;
+            $row .= "        <div class=\"civi-event-calendar-register $style\">$label</div>";
+            $row .= $linkClose;
             $row .= "</div>";
 
-        } elseif ( $isFull ) {
-            $row .= "<div class=\"civi-event-calendar-cell-register\">";
-            $row .= "        <div class=\"civi-event-calendar-register full\">Event Full</div>";
-            $row .= "</div>";
         }
 
         // Add the title and summary
