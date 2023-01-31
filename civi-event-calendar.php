@@ -34,6 +34,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         array(
             'showheader' => 1,
             'header' => 'Upcoming Events',
+            'showical' => 1,
         ), $user_atts, $tag
     );
 
@@ -45,6 +46,23 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         $header = $atts['header'];
 	    $Content .= "    <h3>$header</h3>";
     }
+
+    // Get the current user's contact ID
+    // We'll use the ID to check if user is registered for an event and maybe other stuff...
+    $current_user = wp_get_current_user();
+    $userEmail = $current_user->user_email;
+
+    $Content .="<div>Debug: user email: $userEmail</div>";
+
+    $contactRecord = \Civi\Api4\UFMatch::get(FALSE)
+        ->addSelect('*')
+        ->addWhere('uf_name', '=', $userEmail)
+        ->setLimit(25)
+        ->execute();
+    $contactId = $contactRecord[0]['contact_id'];
+
+
+    $Content .="<div>Debug: user id: $contactId</div>";
 
     // Get events starting today or after ordered by start date
     $eventList = \Civi\Api4\Event::get(FALSE)
@@ -100,24 +118,29 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         // Add the Register button
 
         $isRegistration = $event['is_online_registration'];
+        $maxParticipants = $event['max_participants'];
+        $registeredParticipants = count( \Civi\Api4\Participant::get(FALSE)->addSelect('id')->addWhere('event_id', '=', 101)->execute() );
+        $isFull = ($registeredParticipants >= $maxParticipants);
 
-        if($isRegistration) {
-        $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
+        if( $isRegistration && !$isFull ) {
+            $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
 
-        $row .= "<div class=\"civi-event-calendar-cell-register\">";
-        $row .= "    <a href=\"$reglink\">";
-        $row .= "        <div class=\"civi-event-calendar-register\">Register</div>";
-        $row .= "    </a>";
-        $row .= "</div>";
+            $row .= "<div class=\"civi-event-calendar-cell-register\">";
+            $row .= "    <a href=\"$reglink\">";
+            $row .= "        <div class=\"civi-event-calendar-register\">Register</div>";
+            $row .= "    </a>";
+            $row .= "</div>";
 
+        } elseif ( $isFull ) {
+            $row .= "<div class=\"civi-event-calendar-cell-register\">";
+            $row .= "        <div class=\"civi-event-calendar-register full\">Event Full</div>";
+            $row .= "</div>";
         }
-
-
 
         // Add the title and summary
 
-        $row .= "    <div class=\"civi-event-calendar-title\"><a href=\"$url\">$title</a></div>";
-        $row .= "    <div class=\"civi-event-calendar-description\">$summary</div>";
+        $row .= "<div class=\"civi-event-calendar-title\"><a href=\"$url\">$title</a></div>";
+        $row .= "<div class=\"civi-event-calendar-description\">$summary</div>";
 
         // Close Row
 
@@ -126,7 +149,21 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         $Content .= $row;
     }
 
+    // Add ical Link
+
+    if ( $atts['showical'] > 0 ) {
+
+        $icalLink = CRM_Utils_System::url( 'civicrm/event/ical' );
+        $Content .= "<a href=\"$icalLink\">";
+        $Content .= "<span class=\"fa-stack\" aria-hidden=\"true\"><i class=\"crm-i fa-calendar-o fa-stack-2x\"></i><i style=\"top: 15%;\" class=\"crm-i fa-link fa-stack-1x\"></i></span>";
+        $Content .= "<span class=\"label\">iCalendar feed for current and future public events</span>";
+        $Content .= "</a>";
+
+    }
+
+
     // Close calendar object
+
     $Content .= '</div>';
 
     return $Content;

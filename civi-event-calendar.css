@@ -1,6 +1,7 @@
 
 .civi-event-calendar-event {
     width: 100%;
+    clear: both;
     margin-bottom: 5px;
     align-content: center;
     padding-top: 2px;
@@ -96,6 +97,13 @@
     border-radius: 5px;
     box-shadow: 3px 3px #aaa;
     cursor: pointer;
+  }
+
+  .civi-event-calendar-register.full {
+    background-color: inherit;
+    border: solid 1px #aaa;
+    box-shadow: none;
+    color: black;
   }
 
   
