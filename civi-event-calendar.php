@@ -24,6 +24,14 @@ function civi_event_calendar_enqueue() {
 
 add_action('init', 'civi_event_calendar_enqueue' );
 
+function console_log($label, $output, $with_script_tags = true) {
+    $js_code = 'console.log("' . $label .'",' . json_encode($output, JSON_HEX_TAG) . ');';
+    if ($with_script_tags) {
+        $js_code = '<script>' . $js_code . '</script>';
+    }
+    echo $js_code;
+}
+
 function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
     
 	// Normalize attribute keys to lowercase
@@ -36,16 +44,20 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
             'header' => 'Upcoming Events',
             'showical' => 1,
             'limit' => 0,
+            'widget' => 0,
         ), $user_atts, $tag
     );
 
+    $styleModifier = $atts['widget'] == 1 ? 'widget' : '';
+
     // Open calendar object
-    $Content = '<div class="civi-event-calendar">';
+    $Content = "<div class=\"civi-event-calendar $styleModifier\">";
 
     // Add header
     if($atts['showheader'] > 0) {
         $header = $atts['header'];
-	    $Content .= "    <h3>$header</h3>";
+        $headerClass = $atts['widget'] == 1 ? "widget-title" : "";
+	    $Content .= "    <h3 class=\"$headerClass\">$header</h3>";
     }
 
     // Get events starting today or after ordered by start date
@@ -71,11 +83,19 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         $startDay = date_format($start, 'j');
         $startWeekday = date_format($start, 'l');
 
-        $endString = $event['start_date'];
-        $end = date_create_from_format('Y-m-d H:i:s',$endString);
-        $endMonth = date_format($end, 'F');
-        $endDay = date_format($end, 'j');
-        $endWeekday = date_format($end, 'l');
+        // Check for an end date then validate if this is a multi-day event.
+        $endString = $event['end_date'];
+        $multiday = false;
+        if($endString != null ) {
+            $end = date_create_from_format('Y-m-d H:i:s',$endString);
+            $endMonth = date_format($end, 'F');
+            $endDay = date_format($end, 'j');
+            $endWeekday = date_format($end, 'l');
+
+            $startDate = explode(" ", $startString)[0];
+            $endDate = explode(" ", $endString)[0];
+            $multiday = $startDate != $endDate;
+        }
 
         // Insert a monthly header 
         if ($startMonth != $currentMonth) {
@@ -88,15 +108,20 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         
         // Add the date block
 
-        $row .= "<div class=\"civi-event-calendar-cell-date\">";
-        if ($startDay == $endDay && $startMonth == $endMonth) {
-            // single day event
-            $row .= "    <div class=\"civi-event-calendar-weekday\">$startWeekday</div>";
-            $row .= "    <div class=\"civi-event-calendar-day\">$startDay</div>";
-        } else {
-            // multi-day event
-            $row .="<p>end date is $end</p>";
+        $dateStyle = "";
+        $dayString = $startDay;
+        $weekdayString = $startWeekday;
+
+        // If the start day and end day are different, this is a multi-day event.
+        if ($multiday) {
+            $dateStyle ="multiday";
+            $dayString .=  "-".$endDay;
+            $weekdayString = date_format($start, 'D')."-".date_format($end, 'D');
         }
+
+        $row .= "<div class=\"civi-event-calendar-cell-date\">";
+        $row .= "    <div class=\"civi-event-calendar-weekday\">$weekdayString</div>";
+        $row .= "    <div class=\"civi-event-calendar-day $dateStyle\">$dayString</div>";
         $row .= "</div>";
 
         
