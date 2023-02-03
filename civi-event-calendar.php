@@ -35,7 +35,7 @@ function console_log($label, $output, $with_script_tags = true) {
 function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
     
 	// Normalize attribute keys to lowercase
-	$atts = array_change_key_case( (array) $atts, CASE_LOWER );
+	$user_atts = array_change_key_case( (array) $user_atts, CASE_LOWER );
 
     //Add default attributes and override with user attributes
     $atts = shortcode_atts(
