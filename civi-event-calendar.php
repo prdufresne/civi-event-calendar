@@ -18,11 +18,14 @@
 
 // This could probably be optimized to only enqueue the style sheet when the shortcode is present,
 // but doing so has proven difficult.
-function civi_event_calendar_enqueue() {
+
+namespace CiviEventCalendar;
+
+function enqueue() {
 		wp_enqueue_style("civi-event-calendar-style", plugins_url("civi-event-calendar.css", __FILE__), array(), "1.0", "all");
 }
 
-add_action('init', 'civi_event_calendar_enqueue' );
+add_action('init', __NAMESPACE__.'\enqueue' );
 
 function console_log($label, $output, $with_script_tags = true) {
     $js_code = 'console.log("' . $label .'",' . json_encode($output, JSON_HEX_TAG) . ');';
@@ -32,7 +35,7 @@ function console_log($label, $output, $with_script_tags = true) {
     echo $js_code;
 }
 
-function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
+function render_calendar($user_atts = [], $content = null, $tag = '') {
     
 	// Normalize attribute keys to lowercase
 	$user_atts = array_change_key_case( (array) $user_atts, CASE_LOWER );
@@ -75,7 +78,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
         $summary = $event['summary'];
         $typeLabel = $event['event_type_id:label'];
         $id = $event['id'];
-        $url = CRM_Utils_System::url( 'civicrm/event/info', "reset=1&id=$id" );
+        $url = \CRM_Utils_System::url( 'civicrm/event/info', "reset=1&id=$id" );
 
         $startString = $event['start_date'];
         $start = date_create_from_format('Y-m-d H:i:s',$startString);
@@ -156,7 +159,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
                 $label = "Full";
                 $style = "full";
             } else {
-                $reglink = CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
+                $reglink = \CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
                 $linkOpen = "    <a href=\"$reglink\">";
                 $linkClose = "    </a>";
             }
@@ -185,7 +188,7 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
 
     if ( $atts['showical'] > 0 ) {
 
-        $icalLink = CRM_Utils_System::url( 'civicrm/event/ical' );
+        $icalLink = \CRM_Utils_System::url( 'civicrm/event/ical' );
         $Content .= "<a href=\"$icalLink\">";
         $Content .= "<span class=\"fa-stack\" aria-hidden=\"true\"><i class=\"crm-i fa-calendar-o fa-stack-2x\"></i><i style=\"top: 15%;\" class=\"crm-i fa-link fa-stack-1x\"></i></span>";
         $Content .= "<span class=\"label\">iCalendar feed for current and future public events</span>";
@@ -201,4 +204,4 @@ function civi_event_calendar($user_atts = [], $content = null, $tag = '') {
     return $Content;
 }
 
-add_shortcode('civi-event-calendar', 'civi_event_calendar');
+add_shortcode('civi-event-calendar', __NAMESPACE__.'\render_calendar');
