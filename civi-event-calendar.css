@@ -80,7 +80,7 @@
     color: #888;
   }
 
-  .civi-event-calendar-description:hover {
+  .civi-event-calendar-event:hover .civi-event-calendar-description {
     max-height: unset;
   }
 
