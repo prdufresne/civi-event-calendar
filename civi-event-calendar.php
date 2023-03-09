@@ -3,7 +3,7 @@
  * Plugin Name: CiviCRM Event Calendar
  * Plugin URI: https://github.com/prdufresne/civi-event-calendar
  * Description: Display CiviCRM events as schedule in WordPress
- * Version: 0.1
+ * Version: 0.2
  * Text Domain: civi-event-calendar
  * Author: Paul Dufresne, Eastern Ontario TrailBlazers
  * Author URI: https://www.eotb.ca
