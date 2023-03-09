@@ -130,47 +130,47 @@ function render_calendar($user_atts = [], $content = null, $tag = '') {
         
         // Add the Register button
 
-        $isRegistration = $event['is_online_registration'];
+        // $isRegistration = $event['is_online_registration'];
 
-        if( $isRegistration) {
+        // if( $isRegistration) {
 
-            // Check if the event is full
-            $maxParticipants = $event['max_participants'];
-            $registeredParticipants = count( \Civi\Api4\Participant::get(FALSE)->addSelect('id')->addWhere('event_id', '=', 101)->execute() );
-            $isFull = ($registeredParticipants >= $maxParticipants);
+        //     // Check if the event is full
+        //     $maxParticipants = $event['max_participants'];
+        //     $registeredParticipants = count( \Civi\Api4\Participant::get(FALSE)->addSelect('id')->addWhere('event_id', '=', 101)->execute() );
+        //     $isFull = ($registeredParticipants >= $maxParticipants);
 
-            // Check to see if this user is already registered for the event
-            $participants = \Civi\Api4\Participant::get(FALSE)
-                ->addSelect('id')
-                ->addWhere('contact_id', '=', 'user_contact_id')
-                ->addWhere('event_id', '=', $id)
-                ->setLimit(25)
-                ->execute();
+        //     // Check to see if this user is already registered for the event
+        //     $participants = \Civi\Api4\Participant::get(FALSE)
+        //         ->addSelect('id')
+        //         ->addWhere('contact_id', '=', 'user_contact_id')
+        //         ->addWhere('event_id', '=', $id)
+        //         ->setLimit(25)
+        //         ->execute();
 
-            $linkOpen = '';
-            $linkClose = '';
-            $label = 'Register';
-            $style = '';
+        //     $linkOpen = '';
+        //     $linkClose = '';
+        //     $label = 'Register';
+        //     $style = '';
 
-            if (count($participants) > 0) {
-                $label = "Registered";
-                $style = "registered";
-            } elseif ($isFull) {
-                $label = "Full";
-                $style = "full";
-            } else {
-                $reglink = \CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
-                $linkOpen = "    <a href=\"$reglink\">";
-                $linkClose = "    </a>";
-            }
+        //     if (count($participants) > 0) {
+        //         $label = "Registered";
+        //         $style = "registered";
+        //     } elseif ($isFull) {
+        //         $label = "Full";
+        //         $style = "full";
+        //     } else {
+        //         $reglink = \CRM_Utils_System::url( 'civicrm/event/register', "reset=1&id=$id" );
+        //         $linkOpen = "    <a href=\"$reglink\">";
+        //         $linkClose = "    </a>";
+        //     }
 
-            $row .= "<div class=\"civi-event-calendar-cell-register\">";
-            $row .= $linkOpen;
-            $row .= "        <div class=\"civi-event-calendar-register $style\">$label</div>";
-            $row .= $linkClose;
-            $row .= "</div>";
+        //     $row .= "<div class=\"civi-event-calendar-cell-register\">";
+        //     $row .= $linkOpen;
+        //     $row .= "        <div class=\"civi-event-calendar-register $style\">$label</div>";
+        //     $row .= $linkClose;
+        //     $row .= "</div>";
 
-        }
+        // }
 
         // Add the title and summary
 
