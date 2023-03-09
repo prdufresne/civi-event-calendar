@@ -186,15 +186,15 @@ function render_calendar($user_atts = [], $content = null, $tag = '') {
 
     // Add ical Link
 
-    if ( $atts['showical'] > 0 ) {
+    // if ( $atts['showical'] > 0 ) {
 
-        $icalLink = \CRM_Utils_System::url( 'civicrm/event/ical' );
-        $Content .= "<a href=\"$icalLink\">";
-        $Content .= "<span class=\"fa-stack\" aria-hidden=\"true\"><i class=\"crm-i fa-calendar-o fa-stack-2x\"></i><i style=\"top: 15%;\" class=\"crm-i fa-link fa-stack-1x\"></i></span>";
-        $Content .= "<span class=\"label\">iCalendar feed for current and future public events</span>";
-        $Content .= "</a>";
+    //     $icalLink = \CRM_Utils_System::url( 'civicrm/event/ical' );
+    //     $Content .= "<a href=\"$icalLink\">";
+    //     $Content .= "<span class=\"fa-stack\" aria-hidden=\"true\"><i class=\"crm-i fa-calendar-o fa-stack-2x\"></i><i style=\"top: 15%;\" class=\"crm-i fa-link fa-stack-1x\"></i></span>";
+    //     $Content .= "<span class=\"label\">iCalendar feed for current and future public events</span>";
+    //     $Content .= "</a>";
 
-    }
+    // }
 
 
     // Close calendar object
